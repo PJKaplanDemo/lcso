@@ -1,0 +1,58 @@
+name: LCSO Tests
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Rust stable
+      uses: dtolnay/rust-toolchain@stable
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libopenblas-dev libsuitesparse-dev
+    - name: Build
+      run: cargo build --verbose
+    - name: Run tests
+      run: cargo test --verbose
+    - name: Install cargo-tarpaulin
+      run: cargo install cargo-tarpaulin
+    - name: Run coverage
+      run: |
+        cargo tarpaulin --out xml --fail-under 95 -- --test-threads=1
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: cobertura.xml
+      if: ${{ always() }}
+
+  lint:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Rust stable
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        components: rustfmt, clippy
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libopenblas-dev libsuitesparse-dev
+    - name: Check formatting
+      run: cargo fmt -- --check
+    - name: Clippy
+      run: cargo clippy -- -D warnings

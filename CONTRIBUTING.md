@@ -45,19 +45,21 @@ documentation has been generated, you can view and poke around the
 documentation by opening `$PROJECT_ROOT/target/doc/lcso/index.html`.
 
 ### Code coverage
-Code coverage for Rust projects is not a mature area of the ecosystem. The best
-way I know how to generate a coverage report is to:
-1. Load the project in the [CLion editor](https://www.jetbrains.com/clion/).
-2. Set up a run/debug configuration that runs the tests as shown.
-   ![Create run/debug configuration.](create_config.png)
-3. In the top right of the editor, select **Run '\<config name\>' with Coverage**.
-   ![Run with coverage](run_with_coverage.png)
-4. After it runs, on the left pane of the window that displays the coverage,
-   there is a button that exports the coverage report as an [`lcov`](https://github.com/linux-test-project/lcov) file. You will
-   be prompted to specify a location to export the report to.
-   ![Export coverage report](export_coverage_report.png)
-5. Once you've exported the coverage report, make sure you have the `lcov` tool
-   installed, then navigate to the directory that has the `.lcov` file, 
-   then run `$LCOV_INSTALL_LOCATION/bin/genhtml $LCOV_FILE`.
-6. To view the report, run `open index.html` from the directory you performed step (5) in. 
-   The report should open in your browser.
+This project requires at least **95%** code coverage. Coverage is enforced
+automatically in CI using [`cargo-tarpaulin`](https://github.com/xd009642/tarpaulin)
+with the `--fail-under 95` flag.
+
+To run coverage locally:
+1. Install `cargo-tarpaulin`:
+   ```sh
+   cargo install cargo-tarpaulin
+   ```
+2. Run coverage with the enforcement threshold:
+   ```sh
+   cargo tarpaulin --fail-under 95 -- --test-threads=1
+   ```
+3. To generate an HTML report for detailed inspection:
+   ```sh
+   cargo tarpaulin --out html --fail-under 95 -- --test-threads=1
+   open tarpaulin-report.html
+   ```
