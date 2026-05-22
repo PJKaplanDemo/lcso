@@ -23,3 +23,6 @@ approx = "0.3"
 len-trait = "0.6"
 libmath = "0.2"
 chrono = "0.4"
+
+# Code coverage: install cargo-tarpaulin via `cargo install cargo-tarpaulin`
+# then run `cargo tarpaulin --out Html` to generate coverage reports

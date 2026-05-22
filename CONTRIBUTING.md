@@ -45,19 +45,32 @@ documentation has been generated, you can view and poke around the
 documentation by opening `$PROJECT_ROOT/target/doc/lcso/index.html`.
 
 ### Code coverage
-Code coverage for Rust projects is not a mature area of the ecosystem. The best
-way I know how to generate a coverage report is to:
-1. Load the project in the [CLion editor](https://www.jetbrains.com/clion/).
-2. Set up a run/debug configuration that runs the tests as shown.
+
+All contributions must maintain at least **95% code coverage**.
+
+#### Using cargo-tarpaulin (recommended)
+
+Install [cargo-tarpaulin](https://github.com/xd009642/tarpaulin) and run:
+
+```bash
+cargo install cargo-tarpaulin
+cargo tarpaulin --out Html
+```
+
+This generates an HTML coverage report in the project root. Open `tarpaulin-report.html` to view results.
+
+#### CI Integration
+
+Coverage is automatically checked on all pull requests via GitHub Actions. The workflow runs `cargo test` and generates a coverage report using `cargo-tarpaulin`.
+
+#### Alternative: CLion IDE
+
+You can also generate coverage reports using the CLion editor:
+1. Load the project in [CLion](https://www.jetbrains.com/clion/).
+2. Set up a run/debug configuration that runs the tests.
    ![Create run/debug configuration.](create_config.png)
-3. In the top right of the editor, select **Run '\<config name\>' with Coverage**.
+3. Select **Run '\<config name\>' with Coverage**.
    ![Run with coverage](run_with_coverage.png)
-4. After it runs, on the left pane of the window that displays the coverage,
-   there is a button that exports the coverage report as an [`lcov`](https://github.com/linux-test-project/lcov) file. You will
-   be prompted to specify a location to export the report to.
+4. Export the coverage report as an [`lcov`](https://github.com/linux-test-project/lcov) file.
    ![Export coverage report](export_coverage_report.png)
-5. Once you've exported the coverage report, make sure you have the `lcov` tool
-   installed, then navigate to the directory that has the `.lcov` file, 
-   then run `$LCOV_INSTALL_LOCATION/bin/genhtml $LCOV_FILE`.
-6. To view the report, run `open index.html` from the directory you performed step (5) in. 
-   The report should open in your browser.
+5. Run `genhtml` on the `.lcov` file to generate an HTML report.
