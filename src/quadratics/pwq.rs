@@ -1091,4 +1091,24 @@ mod tests {
         let p = PiecewiseQuadratic::new(vec![f1, f2, f3, f4]);
         assert!(p.is_convex());
     }
+
+    #[test]
+    fn test_zero_trait() {
+        use num::traits::Zero;
+        let z = PiecewiseQuadratic::zero();
+        assert!(z.is_zero());
+        assert_eq!(z.len(), 1);
+
+        let non_zero = PiecewiseQuadratic::new(vec![BoundedQuadratic::new_extended(1., 0., 0.)]);
+        assert!(!non_zero.is_zero());
+    }
+
+    #[test]
+    #[should_panic(expected = "The add trait is implemented")]
+    fn test_add_trait_panics() {
+        let f = BoundedQuadratic::new_extended(1., 0., 0.);
+        let p1 = PiecewiseQuadratic::new(vec![f]);
+        let p2 = PiecewiseQuadratic::new(vec![f]);
+        let _ = p1 + p2;
+    }
 }
